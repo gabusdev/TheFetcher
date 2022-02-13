@@ -1,9 +1,5 @@
 ﻿
-using System;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace TheFetcher
 {
@@ -59,9 +55,9 @@ namespace TheFetcher
                 throw;
             }
         }
-        public void AddParam(string key, string value)
+        public void AddParam(string query, string value)
         {
-            Params.Add(key, value);
+            Params.Add(query, value);
         }
         public void AddHeader(string header, string value)
         {
@@ -80,20 +76,21 @@ namespace TheFetcher
         }
         private string BuildUrl (string path)
         {
-            var check = ContainsCharacterAtPos(BaseUrl, '/', BaseUrl.Length - 1);
-            var urlLink = check ? BaseUrl[0..^1] : BaseUrl;
+            bool check;
+            string urlLink;
             
             if (path.Length != 0)
             {
+                check = ContainsCharacterAtPos(BaseUrl, '/', BaseUrl.Length - 1);
+                urlLink = check ? BaseUrl[0..^1] : BaseUrl;
                 check = ContainsCharacterAtPos(path, '/', 0);
                 urlLink += check ? path: $"/{path}";
             }
-            
-            if (urlLink.Contains("//"))
+            else
             {
-                urlLink.Replace("//", "/");
+                urlLink = BaseUrl;
             }
-
+            
             foreach (var param in Params)
             {
                 urlLink += $"?{param.Key}={param.Value}";
