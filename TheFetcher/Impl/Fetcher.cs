@@ -9,7 +9,7 @@ namespace TheFetcher
         private string _link = "";
         public string BaseUrl { get; } = null!;
         public Dictionary<string,string> Headers { get; }
-        public Dictionary<string, string> Params { get; }
+        public Dictionary<string, string> QueryParams { get; }
 
         public Fetcher(
             string url,
@@ -19,7 +19,7 @@ namespace TheFetcher
         {
             _client = new HttpClient();
             BaseUrl = url;
-            Params = queryParmas ?? new Dictionary<string, string>();
+            QueryParams = queryParmas ?? new Dictionary<string, string>();
             Headers = headers ?? new Dictionary<string, string>();
         }
 
@@ -30,7 +30,7 @@ namespace TheFetcher
                 ReadyRequest(path);
                 var response = await _client.GetAsync(_link);
                 response.EnsureSuccessStatusCode();
-                var item = await response.Content.ReadAsAsync<T>();
+                T item = await response.Content.ReadAsAsync<T>();
                 
                 return item;
             }
@@ -55,9 +55,9 @@ namespace TheFetcher
                 throw;
             }
         }
-        public void AddParam(string query, string value)
+        public void AddQueryParam(string query, string value)
         {
-            Params.Add(query, value);
+            QueryParams.Add(query, value);
         }
         public void AddHeader(string header, string value)
         {
@@ -90,11 +90,9 @@ namespace TheFetcher
             {
                 urlLink = BaseUrl;
             }
-            
-            foreach (var param in Params)
-            {
-                urlLink += $"?{param.Key}={param.Value}";
-            }
+
+            urlLink += GetQuery();
+
             return urlLink;
         }
         private void ReadyClientHeaders()
@@ -108,7 +106,21 @@ namespace TheFetcher
                 _client.DefaultRequestHeaders.Add(item.Key, item.Value);
             }
         }
-        private bool ContainsCharacterAtPos(string text, char character, int pos)
+        private string GetQuery()
+        {
+            string query = "";
+            if (QueryParams.Count != 0)
+            {
+                query += "?";
+                foreach (var param in QueryParams)
+                {
+                    query += $"{param.Key}={param.Value}&";
+                }
+            }
+
+            return query[0..^1];
+        }
+        private static bool ContainsCharacterAtPos(string text, char character, int pos)
         {
             return text.ElementAt(pos) == character;
         }
