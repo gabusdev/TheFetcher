@@ -1,7 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-
-using TheFetcher;
+﻿using TheFetcher;
 
 var baseurl = "https://api.agify.io";
 var baseurl2 = "https://www.boredapi.com/api/";
@@ -14,8 +11,8 @@ var query = new Dictionary<string, string>()
 };
 
 IFetcher fetcher = new Fetcher(baseurl);
-IFetcher fetcher2 = new Fetcher(baseurl2, query);
 fetcher.AddQueryParam("name", "Peter");
+IFetcher fetcher2 = new Fetcher(baseurl2, query);
 
 var finalLink = fetcher.ShowLink();
 var finalLink2 = fetcher2.ShowLink(path);

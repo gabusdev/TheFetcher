@@ -55,6 +55,22 @@ namespace TheFetcher
                 throw;
             }
         }
+        public async Task<string> PostAsync(object data, string path = "")
+        {
+            try
+            {
+                ReadyRequest(path);
+                var response = await _client.PostAsJsonAsync(_link, data);
+                response.EnsureSuccessStatusCode();
+                var stringItem = await response.Content.ReadAsStringAsync();
+
+                return stringItem;
+            }
+            catch (HttpRequestException)
+            {
+                throw;
+            }
+        }
         public void AddQueryParam(string query, string value)
         {
             QueryParams.Add(query, value);

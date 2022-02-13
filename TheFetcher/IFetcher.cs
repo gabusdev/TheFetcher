@@ -10,8 +10,9 @@ namespace TheFetcher
     {
         Task<T> GetAsync<T>(string path = "") where T : class;
         Task<string> GetAsync(string path = "");
+        Task<string> PostAsync(object data, string path = "");
         void AddQueryParam(string key, string value);
-        string ShowLink(string path = "");
         void AddHeader(string header, string value);
+        string ShowLink(string path = "");
     }
 }
